@@ -93,6 +93,12 @@ EXTRA_FILTER: QueryObjectFilterClause = {
             "город,value\nМосква,1".encode("utf-8"),
             "application/octet-stream",
         ),
+        (
+            "report.unknown",
+            b"binary",
+            b"binary",
+            "application/octet-stream",
+        ),
     ],
 )
 def test_build_email_attachment(
