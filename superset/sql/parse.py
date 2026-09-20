@@ -2800,7 +2800,7 @@ def remove_quotes(val: T) -> T:
     if val is None:
         return None
 
-    if val[0] in {'"', "'", "`"} or val[0] == val[-1]:
+    if val[0] in {'"', "'", "`"} and val[0] == val[-1]:
         val = val[1:-1]
 
     return val
