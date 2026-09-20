@@ -668,6 +668,9 @@ def test_normalize_time_delta() -> None:
     # matching is case-insensitive and the result uses lowercase keys
     assert normalize_time_delta("1 QUARTER ago") == {"months": -3}
     assert normalize_time_delta("1 Year AGO") == {"years": -1}
+    # only "ago" flips the sign
+    assert normalize_time_delta("30 seconds later") == {"seconds": 30}
+    assert normalize_time_delta("3 quarters later") == {"months": 9}
 
     with pytest.raises(TimeDeltaAmbiguousError):
         normalize_time_delta("one year ago")
