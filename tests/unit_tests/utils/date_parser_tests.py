@@ -673,6 +673,21 @@ def test_normalize_time_delta() -> None:
         normalize_time_delta("one year ago")
 
 
+@pytest.mark.parametrize(
+    "human_readable",
+    [
+        "30 seconds ago",
+        "5 minutes ago",
+        "12 hours ago",
+        "28 days ago",
+        "1 quarter ago",
+    ],
+)
+def test_normalize_time_delta_ago_is_negative(human_readable: str) -> None:
+    ((unit, value),) = normalize_time_delta(human_readable).items()
+    assert value < 0, f"{human_readable!r} must shift backwards ({unit}={value})"
+
+
 def test_parse_human_datetime() -> None:
     with pytest.raises(TimeRangeAmbiguousError):
         parse_human_datetime("2 days")
