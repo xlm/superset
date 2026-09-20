@@ -22,6 +22,7 @@ from unittest.mock import Mock, patch
 import freezegun
 import pytest
 from dateutil.relativedelta import relativedelta
+from pandas import DateOffset
 
 from superset.commands.chart.exceptions import (
     TimeRangeAmbiguousError,
@@ -671,6 +672,28 @@ def test_normalize_time_delta() -> None:
 
     with pytest.raises(TimeDeltaAmbiguousError):
         normalize_time_delta("one year ago")
+
+
+@pytest.mark.parametrize(
+    "human_readable",
+    [
+        "30 seconds ago",
+        "5 minutes ago",
+        "12 hours ago",
+        "28 days ago",
+        "1 quarter ago",
+    ],
+)
+def test_normalize_time_delta_ago_moves_backward(human_readable: str) -> None:
+    now = datetime(2024, 3, 15, 12, 0, 0)
+    shifted = now + DateOffset(**normalize_time_delta(human_readable))
+    assert shifted < now
+
+
+def test_normalize_time_delta_later_moves_forward() -> None:
+    now = datetime(2024, 3, 15, 12, 0, 0)
+    shifted = now + DateOffset(**normalize_time_delta("30 seconds later"))
+    assert shifted > now
 
 
 def test_parse_human_datetime() -> None:
