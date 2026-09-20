@@ -5245,6 +5245,9 @@ def test_remove_quotes() -> None:
     assert remove_quotes("'foo'") == "foo"
     assert remove_quotes("`foo`") == "foo"
     assert remove_quotes("'foo`") == "'foo`"
+    assert remove_quotes('"foo') == '"foo'
+    assert remove_quotes('foo"') == 'foo"'
+    assert remove_quotes("xyx") == "xyx"
 
 
 @pytest.mark.parametrize(
