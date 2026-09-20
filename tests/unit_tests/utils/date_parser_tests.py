@@ -673,6 +673,35 @@ def test_normalize_time_delta() -> None:
         normalize_time_delta("one year ago")
 
 
+@pytest.mark.parametrize(
+    "human_readable,expected",
+    [
+        ("30 seconds ago", {"seconds": -30}),
+        ("5 minutes ago", {"minutes": -5}),
+        ("1 hour ago", {"hours": -1}),
+        ("7 days ago", {"days": -7}),
+        ("1 quarter ago", {"months": -3}),
+        ("30 seconds later", {"seconds": 30}),
+        ("1 quarter later", {"months": 3}),
+        ("  30   seconds   AGO", {"seconds": -30}),
+        ("0 days ago", {"days": 0}),
+    ],
+)
+def test_normalize_time_delta_direction(
+    human_readable: str, expected: dict[str, int]
+) -> None:
+    """
+    "ago" must move the window into the past (negative delta) and "later"
+    must move it into the future (positive delta).
+    """
+    assert normalize_time_delta(human_readable) == expected
+
+
+def test_normalize_time_delta_requires_direction() -> None:
+    with pytest.raises(TimeDeltaAmbiguousError):
+        normalize_time_delta("30 seconds")
+
+
 def test_parse_human_datetime() -> None:
     with pytest.raises(TimeRangeAmbiguousError):
         parse_human_datetime("2 days")
