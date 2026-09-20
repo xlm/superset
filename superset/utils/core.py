@@ -135,7 +135,7 @@ def build_email_attachment(name: str, body: bytes | str) -> MIMEApplication:
     payload = body.encode("utf-8") if isinstance(body, str) else body
     attachment = MIMEApplication(
         payload,
-        _subtype=subtype or "plain",
+        _subtype=subtype or "octet-stream",
         Name=name,
     )
     attachment.add_header("Content-Disposition", "attachment", filename=name)
